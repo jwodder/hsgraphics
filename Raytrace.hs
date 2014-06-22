@@ -16,10 +16,8 @@ module Raytrace (
   RTColor, rtcolor, (%+), (%%), (*%)
  ) where
  import Control.Monad (guard)
- import Math (quadratic')
- import Math.Vector
- import MoreData.Lists (pairNext')
  import Raster.Color
+ import Vec3
 
  type Ray a = (Vec3 a, Vec3 a)  -- origin and direction
 
@@ -45,9 +43,9 @@ module Raytrace (
 -- Raytracing: ----------------------------------------------------------------
 
  intersections :: RealFloat a => Scene a -> Ray a
-  -> [(a, Vec3 a, Bool, Material a)]
+					 -> [(a, Vec3 a, Bool, Material a)]
  intersections scene ray = [(ð, n, s, matter) | (f, matter) <- scene,
-  Just (ð, n, s) <- [f ray]]
+						Just (ð, n, s) <- [f ray]]
 
  traceRay :: RealFloat a => Scene a -> Int -> Ray a -> RTColor a
  traceRay _ d _ | d < 1 = black
@@ -83,9 +81,9 @@ module Raytrace (
 
  sphere :: RealFloat a => Vec3 a -> a -> Intersectable a
  sphere center r (orig, dir) = do
-  sol <- minST2 (>= 0) =<< quadratic' (magn2 dir)
-				      (2 * dir <.> (orig <-> center))
-				      (magn2 (orig <-> center) - r*r)
+  sol <- minST2 (>= 0) =<< quadratic (magn2 dir)
+				     (2 * dir <.> (orig <-> center))
+				     (magn2 (orig <-> center) - r*r)
   wrapUp sol (orig<+>scale sol dir<->center) (magnitude (orig<->center) < r)
 
  cylinderShell :: RealFloat a => Ray a -> a -> Intersectable a
@@ -96,7 +94,7 @@ module Raytrace (
 					  / dir <.> axDir | i <- [0,1]]
   (0, 0, _) -> Nothing
   (0, _, _) -> let ð = -c/b in if alongAxis ð then finalize ð else Nothing
-  (_, _, _) -> quadratic' a b c >>= minST2 alongAxis >>= finalize
+  (_, _, _) -> quadratic a b c >>= minST2 alongAxis >>= finalize
   where alef = component dir axDir
 	bet  = component (orig <-> axOrig) axDir
 	a = alef <.> alef
@@ -212,6 +210,11 @@ module Raytrace (
 
 -- Unexported functions: ------------------------------------------------------
 
+ quadratic :: RealFloat a => a -> a -> a -> Maybe (a,a)
+ quadratic a b c = if disc < 0 then Nothing
+		   else Just ((-b + sqrt disc)/2/a, (-b - sqrt disc)/2/a)
+  where disc = b*b - 4*a*c
+
  epsilon :: Fractional a => a
  epsilon = 0.0000001
 
@@ -235,7 +238,13 @@ module Raytrace (
  ingon n vs u = case head prods of (0, d) -> 0 <= d && d <= 1
 				   (s, _) -> ingon' s (tail prods)
   where prods = [(signum $ cross a b <.> n, projFactor b a)
-		 | (x,y) <- pairNext' vs, let a = x <-> y, let b = u <-> y]
+		 | (x,y) <- pairNext vs, let a = x <-> y, let b = u <-> y]
 	ingon' s ((0,d):_)  = 0 <= d && d <= 1
 	ingon' s ((t,_):xs) = s == t && ingon' s xs
 	ingon' _ [] = True
+
+ -- @pairNext xs@ returns a list of all pairs of consecutive elements in @xs@,
+ -- with the last element paired with the first.
+ pairNext :: [a] -> [(a,a)]
+ pairNext [] = []
+ pairNext xs@(y:ys) = zip xs (ys ++ [y])
