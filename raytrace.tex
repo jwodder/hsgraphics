@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage{math}
+\usepackage{struct}
+\usepackage[margin=1in]{geometry}
+\setlength{\parindent}{0.5in}
+\title{How to Raytrace}
+\begin{document}
+\maketitle
+
+\emph{Throughout the following, a color is an element of $[0,1]^3$, with
+addition and multiplication defined componentwise; if, after all other
+calculations, a component of a color is greater than 1, it is set to 1.
+Moreover, $\epsilon$ represents an arbitrarily small quantity, used to avoid
+immediately hitting the current surface at the current point again.}
+
+\vspace{2ex}
+
+Given a ``camera'' at point $\v{o}$ and a ``screen,'' for every point $\v{s}$ on the screen, let $\v{v} = (\v{s}-\v{o})/\|\v{s}-\v{o}\|$; the color of the pixel at $\v{s}$ is then found by finding the first object that the ray $\v{o}+t\v{v}$ ($t\geq 0$) intersects:
+\begin{itemize}
+\item If it hits nothing, the color of the pixel is black.
+\item If it hits a light, the color of the pixel is white.
+\item If it hits a non-light object $Q$, let $\v{p}$ be the point of intersection and $\v{n}$ be the unit vector normal to the surface of $Q$ at $\v{p}$.  The color of the pixel is $C = (0, 0, 0)$ with values added to it as follows:
+ \begin{itemize}
+ \item For every light source in the scene, let $\v{\ell}$ be its center and let $\v{m}=(\v{\ell}-\v{p})/\|\v{\ell}-\v{p}\|$.  If the ray $(\v{p}+\epsilon\v{m})+t\v{m}$ intersects a non-light primitive before intersecting $\ell$, skip the rest of this step for this light.  Otherwise:
+  \begin{itemize}
+  \item If $\v{n}\dotp\v{m}$ and the diffusion of $Q$'s material are both positive, multiply their product by the product of the colors of $Q$ and the light source and add the result to $C$.
+  \item If $\v{v}\dotp(\v{m} - 2(\v{m}\dotp\v{n})\v{n})$ and the specularity of $Q$'s material are both positive, calculate the former to the power of 20\comm{?} multiplied by the product of the latter and the color of the light source, and add the result to $C$.
+  \end{itemize}
+ \item If the reflectiveness of $Q$'s material is greater than zero, let $\v{r} = \v{v} - 2(\v{v}\dotp\v{n})\v{n}$ (the reflection of $\v{p}$ after hitting $Q$) and add to $C$ the color corresponding to the ray $(\v{p}+\epsilon\v{r})+t\v{r}$ multiplied by $Q$'s reflectiveness, multiplied by $Q$'s color.  (The depth of this recursion should be limited to some fixed value.)
+ \item If $Q$'s material permits refraction, let $i$ be the index of refraction of the medium in which $\v{o}$ is located divided by the index of refraction on the other side of the surface of $Q$, let $c = \v{v}\dotp\v{n}$, and let $s = i^2(1-c^2)$.  If $s$ is less than or equal to 1, let $\v{t} = i(\v{v} - (c+\sqrt{1-s})\v{n})$ (the refraction of $\v{v}$ through the surface of $Q$) and add to $C$ the color corresponding to the ray $(\v{p}+\epsilon\v{t})+t\v{t}$.  (If $s>1$, then total internal reflection occurs, which \comm{does not need to be handled???})
+ \end{itemize}
+\end{itemize}
+
+\section*{Formul\ae{} for Intersections}
+\begin{itemize}
+\item Given a sphere of radius $r$ centered at $\v{c}$, the values of $t$ for which a vector $\v{o}+t\v{v}$ intersects it are all of the solutions of $\|\v{v}\|^2 t^2 + 2(\v{v}\dotp(\v{o}-\v{c})) t + \|\v{o}-\v{c}\|^2 = r^2$.
+\item Given a plane with normal vector $\v{n}$ and containing the point $d\v{n}$ for some $d\in\R^\geq$, the value of $t$ for which a (non-coplanar) vector $\v{o}+t\v{v}$ intersects it is $((d\v{n}-\v{o})\dotp\v{n})/(\v{v}\dotp\v{n})$.
+\item Given an indexed set of points $\{\v{x}_i\}_{i=0}^n$ forming a polygon such that each $\v{x}_i$ is adjacent to both $\v{x}_{(i-1)\bmod(n+1)}$ and $\v{x}_{(i+1)\bmod(n+1)}$, the values of $t$ for which a vector $\v{o}+t\v{v}$ intersects the interior (i.e., not the edges) of this polygon are all the $t$'s such that $\v{p} = \v{o}+t\v{v}$ is in the plane containing the polygon and such that the values in $\{((\v{x}_{(i+1)\bmod(n+1)} - \v{x}_i)\times(\v{p} - \v{x}_i))\dotp\v{n} : i\in[0,n]\cap\Z\}$ (where $\v{n}$ is a vector normal to the plane) are either all positive or all negative.  \comm{Does this only work for convex polygons?}
+\end{itemize}
+
+\end{document}
+
+TO ADD:
+ - formulae for normals
+ - formulae for cylindrical shells
+ - descriptions of the relevant properties of materials (color, diffusion,
+   specularity, reflectiveness, index of refraction (in (0, \infty)?), etc.)
+  - In Bikker's raytracer{1,2} (but not raytracer3), specularity was equal to 1
+    minus the diffusion; look into this.
+ - Sources:
+  - <http://www.devmaster.net/articles/raytracing_series/part1.php>
+  - <http://www.devmaster.net/articles/raytracing_series/Reflections%20and%20Refractions%20in%20Raytracing.pdf>
+  - <http://www.itu.dk/courses/IM/Projects/Raytracer/RayNotes.pdf>
+
+Alternative algorithm for checking whether a given point p is inside a polygon:
+Pick a point known to be outside the polygon and consider the line segment
+between it and p; p is then inside the polygon iff this line segment intersects
+an odd number of edges of the polygon.

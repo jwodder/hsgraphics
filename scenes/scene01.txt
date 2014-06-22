@@ -1,0 +1,31 @@
+200 200  # width, height
+
+#(-15, 0, 0)  # camera
+
+#(3, 20, 20)  # screen corner
+#(0, -40, 0)  # x-edge of screen
+#(0, 0, -40)  # y-edge of screen
+
+(15, 7, 25)
+
+(35, -20, 17)
+(-40, 0, 0)
+(0, 40, 0)
+
+# scene:
+plane (0, 0, 1) -10 : white 0.4 1
+sphere (12, -10, 10) 7 : green 0.7 0
+sphere (20, 15, 10) 5 : grey 1 0
+
+triangle (10, 10, 10) (0, 10, 10) (10, 20, 10) : red 0.8 0.2
+
+#parallelogram (25, -5, 8) (0, -10, 7) (10, 0, 0) : yellow 1 1
+#regular (-1, 1, 1) (25, -5, 8) (-3, -10, 7) 5 : yellow 1 1
+regular (0, 0, -1) (30, -5, 8) (0, 10, 0) 4 : yellow 1 1
+#parallelogram (30, 5, 8) (10, -10, 0) (-10, -10, 0) : yellow 1 1
+
+cylinder (5, 3, 5) (3, 0, 10) 5 : blue 1 1
+
+light (25, 0, 20) 0.1 white
+light (-20, 0, 20) 0.1 white
+#light (15, 0, 30) 0.1 white
