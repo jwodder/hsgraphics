@@ -1,12 +1,16 @@
 {-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
 
+{- Things this code still needs to do:
+ * Handle preprocessor directives in the middle of the array
+ * Support backslash-newlines inside tokens
+-}
+
 module ReadXBM2 (readsXBM) where
  import Control.Monad (liftM2, guard)
  import Data.Bits (testBit)
  import Data.Char
  import Data.List (isSuffixOf)
  import Text.ParserCombinators.ReadP
- import Parsing.ReadP (most, most1, cint)
  import Raster hiding (height, width)
 
  readsXBM :: ReadS (String, Maybe Coord, Bitmap)
@@ -38,6 +42,19 @@ module ReadXBM2 (readsXBM) where
 		   if 0 <= xHot && xHot < width && 0 <= yHot && yHot < height
 		      then return (yHot, xHot) else Nothing
   return (name, hotspot, xbm)
+
+ -- |@most@ and @most1@ parse as many instances of the given parser as
+ -- possible, without creating any \"branches\" for stopping early.
+ most, most1 :: ReadP a -> ReadP [a]
+ most  p = most1 p <++ return []
+ most1 p = liftM2 (:) p (most p)
+
+ cint :: ReadP Int
+ cint = look >>= \ahead -> case ahead of
+  '0':'x':_ -> get >> get >> readS_to_P readHex
+  '0':'X':_ -> get >> get >> readS_to_P readHex
+  '0':_     -> readS_to_P readOct
+  _         -> readS_to_P readDec
 
  cspace, cspace1, cspace' :: ReadP ()
  cspace  = most  cspace' >> return ()
@@ -91,8 +108,3 @@ module ReadXBM2 (readsXBM) where
  lbrace    = string "{" +++ string "<%" +++ string "??<" >> return '{'
  rbrace    = string "}" +++ string "%>" +++ string "??>" >> return '}'
  backslash = string "\\" +++ string "??/" >> return '\\'
-
-{- Things this code still needs to do:
- * Handle preprocessor directives in the middle of the array
- * Support backslash-newlines inside tokens
--}

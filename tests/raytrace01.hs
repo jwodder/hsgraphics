@@ -1,5 +1,5 @@
 import qualified Data.ByteString.Lazy as Buf (writeFile)
-import Math.Vector
+import Vec3
 import Raster (fnewRaster, exportBMP, RGBColor(..))
 import Raster.Color (toRGB)
 import Raster.Palette
