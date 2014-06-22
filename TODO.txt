@@ -1,3 +1,7 @@
+- Add a README
+- Add a Makefile
+- Add documentation
+
 - Raster.hs:
  - Add functions for ANDing, ORing, and XORing two Bitmaps together
  - Add resizing and/or scaling functions?

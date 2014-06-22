@@ -24,12 +24,15 @@ module Vec3 where
  Vec3 (a, b, c) <.> Vec3 (d, e, f) = a*d + b*e + c*f
 
  (<+>) :: Num f => Vec3 f -> Vec3 f -> Vec3 f
+ {-# INLINE (<+>) #-}
  Vec3 (a, b, c) <+> Vec3 (d, e, f) = Vec3 (a+d, b+e, c+f)
 
  (<->) :: Num f => Vec3 f -> Vec3 f -> Vec3 f
+ {-# INLINE (<->) #-}
  Vec3 (a, b, c) <-> Vec3 (d, e, f) = Vec3 (a-d, b-e, c-f)
 
  scale :: Num f => f -> Vec3 f -> Vec3 f
+ {-# INLINE scale #-}
  scale c (Vec3 (x, y, z)) = Vec3 (c*x, c*y, c*z)
 
  magn2 :: Num f => Vec3 f -> f  -- square of magnitude
