@@ -1,19 +1,19 @@
 -- items in input file: width height camera UL-screen-corner xEdge yEdge object*
 
-import Control.Monad (ap, liftM2, liftM3, liftM4)
+import Control.Monad (ap, guard, liftM2, liftM3, liftM4)
+import Data.Char (isSpace)
 import Data.Maybe (fromMaybe)
 import Numeric
 import System.Environment (getArgs)
 import qualified Data.ByteString.Lazy as Buf (writeFile)
 import Text.ParserCombinators.ReadP
-import Math (idiv)
-import Math.Vector
-import Parsing.ReadP
+import Vec3
 import Raster (fnewRaster, exportBMP)
 import Raster.Color
 import Raster.Palette
 import Raytrace
 
+main :: IO ()
 main = do
  (width, height, camera, (cor, xEdge, yEdge), scene)
   <- getArgs >>= readArgv >>= readScene . head
@@ -21,6 +21,9 @@ main = do
  Buf.writeFile "tracer.bmp" {- IMPROVE THIS -} $ exportBMP $ fnewRaster
   (\(y, x) -> toRGB $ traceRay scene 6 (camera, cor <+> scale (idiv x width) xEdge <+> scale (idiv y height) yEdge <-> camera))
   (height, width)
+
+idiv :: (Integral a, Integral b, Fractional c) => a -> b -> c
+idiv x y = fromIntegral x / fromIntegral y
 
 type Screen a = (Vec3 a, Vec3 a, Vec3 a)  -- corner, x-edge, y-edge
 
@@ -118,3 +121,21 @@ readColor = readEntry [("blue", blue), ("green", green), ("cyan", cyan),
 		      (readS_to_P lex)
 	     +++ (char 'x' >> readS_to_P readHex6)
 	     +++ fmap (\(r, g, b) -> rtcolor r g b) (readS_to_P reads)
+
+-- |@most@ and @most1@ parse as many instances of the given parser as
+-- possible, without creating any \"branches\" for stopping early.
+most, most1 :: ReadP a -> ReadP [a]
+most  p = most1 p <++ return []
+most1 p = liftM2 (:) p (most p)
+
+readToken :: String -> ReadP ()
+readToken tok = readS_to_P lex >>= guard . (== tok)
+
+skipSpaces1 :: ReadP ()
+skipSpaces1 = munch1 isSpace >> return ()
+
+readEntry :: Eq a => [(a,b)] -> ReadP a -> ReadP b
+readEntry dict f = do a <- f; Just b <- return $ lookup a dict; return b
+
+optional' :: ReadP a -> ReadP (Maybe a)
+optional' f = fmap Just f +++ return Nothing

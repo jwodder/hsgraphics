@@ -239,7 +239,7 @@ module Raytrace (
 				   (s, _) -> ingon' s (tail prods)
   where prods = [(signum $ cross a b <.> n, projFactor b a)
 		 | (x,y) <- pairNext vs, let a = x <-> y, let b = u <-> y]
-	ingon' s ((0,d):_)  = 0 <= d && d <= 1
+	ingon' _ ((0,d):_)  = 0 <= d && d <= 1
 	ingon' s ((t,_):xs) = s == t && ingon' s xs
 	ingon' _ [] = True
 
