@@ -1,28 +1,3 @@
-{- TODO:
- * Implement the following objects:
-  * solid balls
-  * filled cylinders
-  * unfilled cylinders with bases
-  * sections of spheres?
-  * discs?
-  * parallelipipeds
-   * blocks (rectangular prisms), filled and unfilled
-  * tori
- * Implement surfaces for which coloring is a function of location
- * How should polygons handle rays lying within their plane?
- * 'sphere' and 'cylinderShell': Handle 'orig' being on the surface
- * How should insideness be determined for rays lying within a plane or
-   cylinderShell?
- * Figure out why 'plane' seems to return a negated normal when both the input
-   normal and `d' are negated (cf. the differences in shadowing when the latter
-   two vector arguments to 'parallelogram' or 'triangle' in scene01.txt are
-   transposed or when the `n' value passed to 'regular' is negated)
- * Continue following along with
-   <http://www.devmaster.net/articles/raytracing_series/part3.php> (stopped
-   while trying to figure out why his refraction results are slightly different
-   from mine)
--}
-
 module Raytrace (
   -- * Types
   Ray, Intersectable, Material(..), Object, Scene,

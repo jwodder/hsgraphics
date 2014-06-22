@@ -1,0 +1,45 @@
+- Raster.hs:
+ - Add functions for ANDing, ORing, and XORing two Bitmaps together
+ - Add resizing and/or scaling functions?
+ - Add a function for combining two or more Rasters into a single image?
+ - Add a function for invoking 'ixmap' on a Raster's internal array
+ - Possibly add map functions with the type signatures:
+  - (Coord -> a -> Coord) -> Raster a -> Raster a
+  - (Coord -> a -> (Coord, b)) -> Raster a -> Raster b
+ - Add functions for importing & exporting NetPBM images
+ - Switch the names of the {to,from}Pixels and {to,from}List functions?
+ - Add a readXPM function that constructs a Raster of a custom tagged union of
+   RGB values, HSV values, symbolic names, and "None"
+  - Add an advanced alternative to exportXPM that uses the above datatype
+ - Add a Bitmap constructor that takes a [Coord]?
+
+- Raytrace.hs:
+ - Implement the following objects:
+  - solid balls
+  - filled cylinders
+  - unfilled cylinders with bases
+  - sections of spheres?
+  - discs?
+  - parallelipipeds
+   - blocks (rectangular prisms), filled and unfilled
+  - tori
+ - Implement surfaces for which coloring is a function of location
+ - How should polygons handle rays lying within their plane?
+ - 'sphere' and 'cylinderShell': Handle 'orig' being on the surface
+ - How should insideness be determined for rays lying within a plane or
+   cylinderShell?
+ - Figure out why 'plane' seems to return a negated normal when both the input
+   normal and `d' are negated (cf. the differences in shadowing when the latter
+   two vector arguments to 'parallelogram' or 'triangle' in scene01.txt are
+   transposed or when the `n' value passed to 'regular' is negated)
+ - Continue following along with
+   <http://www.devmaster.net/articles/raytracing_series/part3.php> (stopped
+   while trying to figure out why his refraction results are slightly different
+   from mine)
+
+- tracer.hs:
+ - Add options for setting the width, height, and outfile
+ - Add an option for setting the recursion depth
+ - Improve the input file format?
+ - Change some of the instances of `readSFloat` (e.g., when reading radii) to
+   `readS_to_P readFloat`

@@ -1,19 +1,3 @@
-{- TODO:
- * Add functions for ANDing, ORing, and XORing two Bitmaps together
- * Add resizing and/or scaling functions?
- * Add a function for combining two or more Rasters into a single image?
- * Add a function for invoking 'ixmap' on a Raster's internal array
- * Possibly add map functions with the type signatures:
-  * (Coord -> a -> Coord) -> Raster a -> Raster a
-  * (Coord -> a -> (Coord, b)) -> Raster a -> Raster b
- * Add functions for importing & exporting NetPBM images
- * Switch the names of the {to,from}Pixels and {to,from}List functions?
- * Add a readXPM function that constructs a Raster of a custom tagged union of
-   RGB values, HSV values, symbolic names, and "None"
-  * Add an advanced alternative to exportXPM that uses the above datatype
- * Add a Bitmap constructor that takes a [Coord]?
--}
-
 module Raster (
   -- * Types
   Raster, Coord, RGBColor(..), Bitmap, Greymap, RGBImage,

@@ -1,11 +1,3 @@
-{- TODO:
- - Add options for setting the width, height, and outfile
- - Add an option for setting the recursion depth
- - Improve the input file format?
- - Change some of the instances of `readSFloat` (e.g., when reading radii) to
-   `readS_to_P readFloat`
--}
-
 -- items in input file: width height camera UL-screen-corner xEdge yEdge object*
 
 import Control.Monad (ap, liftM2, liftM3, liftM4)
