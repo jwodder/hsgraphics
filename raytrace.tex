@@ -19,7 +19,11 @@ immediately hitting the current surface at the current point again.}
 
 \vspace{2ex}
 
-Given a ``camera'' at point $\v{o}$ and a ``screen,'' for every point $\v{s}$ on the screen, let $\v{v} = (\v{s}-\v{o})/\|\v{s}-\v{o}\|$; the color of the pixel at $\v{s}$ is then found by finding the first object that the ray $\v{o}+t\v{v}$ ($t\geq 0$) intersects:
+Given a ``camera'' at point $\v{o}$ and a ``screen,'' for every point $\v{s}$
+on the screen, let $\v{v} = (\v{s}-\v{o})/\|\v{s}-\v{o}\|$; the color of the
+pixel at $\v{s}$ is then found by finding the first object that the ray
+$\v{o}+t\v{v}$ ($t\geq 0$) intersects:
+
 \begin{itemize}
 \item If it hits nothing, the color of the pixel is black.
 \item If it hits a light, the color of the pixel is white.
@@ -37,9 +41,26 @@ Given a ``camera'' at point $\v{o}$ and a ``screen,'' for every point $\v{s}$ on
 
 \section*{Formul\ae{} for Intersections}
 \begin{itemize}
-\item Given a sphere of radius $r$ centered at $\v{c}$, the values of $t$ for which a vector $\v{o}+t\v{v}$ intersects it are all of the solutions of $\|\v{v}\|^2 t^2 + 2(\v{v}\bullet(\v{o}-\v{c})) t + \|\v{o}-\v{c}\|^2 = r^2$.
-\item Given a plane with normal vector $\v{n}$ and containing the point $d\v{n}$ for some $d\in\R^\geq$, the value of $t$ for which a (non-coplanar) vector $\v{o}+t\v{v}$ intersects it is $((d\v{n}-\v{o})\bullet\v{n})/(\v{v}\bullet\v{n})$.
-\item Given an indexed set of points $\{\v{x}_i\}_{i=0}^n$ forming a polygon such that each $\v{x}_i$ is adjacent to both $\v{x}_{(i-1)\bmod(n+1)}$ and $\v{x}_{(i+1)\bmod(n+1)}$, the values of $t$ for which a vector $\v{o}+t\v{v}$ intersects the interior (i.e., not the edges) of this polygon are all the $t$'s such that $\v{p} = \v{o}+t\v{v}$ is in the plane containing the polygon and such that the values in $\{((\v{x}_{(i+1)\bmod(n+1)} - \v{x}_i)\times(\v{p} - \v{x}_i))\bullet\v{n} : i\in[0,n]\cap\Z\}$ (where $\v{n}$ is a vector normal to the plane) are either all positive or all negative.  \comm{Does this only work for convex polygons?}
+
+\item Given a sphere of radius $r$ centered at $\v{c}$, the values of $t$ for
+which a vector $\v{o}+t\v{v}$ intersects it are all of the solutions of
+$\|\v{v}\|^2 t^2 + 2(\v{v}\bullet(\v{o}-\v{c})) t + \|\v{o}-\v{c}\|^2 = r^2$.
+
+\item Given a plane with normal vector $\v{n}$ and containing the point
+$d\v{n}$ for some $d\in\R^\geq$, the value of $t$ for which a (non-coplanar)
+vector $\v{o}+t\v{v}$ intersects it is $((d\v{n}-\v{o})\bullet\v{n}) /
+(\v{v}\bullet\v{n})$.
+
+\item Given an indexed set of points $\{\v{x}_i\}_{i=0}^n$ forming a polygon
+such that each $\v{x}_i$ is adjacent to both $\v{x}_{(i-1)\bmod(n+1)}$ and
+$\v{x}_{(i+1)\bmod(n+1)}$, the values of $t$ for which a vector $\v{o}+t\v{v}$
+intersects the interior (i.e., not the edges) of this polygon are all the $t$'s
+such that $\v{p} = \v{o}+t\v{v}$ is in the plane containing the polygon and
+such that the values in $\{((\v{x}_{(i+1)\bmod(n+1)} - \v{x}_i)\times(\v{p} -
+\v{x}_i))\bullet\v{n} : i\in[0,n]\cap\Z\}$ (where $\v{n}$ is a vector normal to
+the plane) are either all positive or all negative.  \comm{Does this only work
+for convex polygons?}
+
 \end{itemize}
 
 \end{document}
