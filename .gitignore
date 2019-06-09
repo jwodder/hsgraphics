@@ -1,0 +1,4 @@
+*.hi
+*.o
+bin/tracer
+tracer.bmp

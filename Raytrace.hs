@@ -23,7 +23,7 @@ module Raytrace (
 
  type Intersectable a = Ray a -> Maybe (a, Vec3 a, Bool)
   -- The 'a' value is the factor by which the direction vector is scaled so
-  -- that adding it to the the origin vector yields the closest point on the
+  -- that adding it to the origin vector yields the closest point on the
   -- object.  The Vec3 is the unit vector normal to the surface at the point of
   -- intersection.  The Bool is True iff the ray hit the object from "inside."
 
